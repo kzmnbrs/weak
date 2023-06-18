@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"github.com/stretchr/testify/assert"
 	"runtime"
+	"runtime/debug"
 	"testing"
 )
 
@@ -39,7 +40,10 @@ func TestPointer_Cast(t *testing.T) {
 func TestPointer_Indirect(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		ss := make([]byte, 64)
-		rand.Read(ss)
+		n, err := rand.Read(ss)
+		assert.Equal(t, 64, n)
+		assert.Nil(t, err)
+
 		ssptr := NewPointer[[]byte](&ss)
 
 		runtime.GC()
@@ -64,6 +68,7 @@ func TestPointer_Indirect(t *testing.T) {
 		runtime.GC()
 		runtime.GC()
 
+		debug.SetPanicOnFault(true)
 		assert.Panics(t, func() {
 			ss1 := ssptr.Indirect()
 			ss1[0] = '1'
