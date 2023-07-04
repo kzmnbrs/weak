@@ -19,7 +19,6 @@ type Token struct {
     Value weak.Slice[rune]
 }
 
-
 func TokenizeTo(dst []Token, in []rune) {
     off := 0
     for {
