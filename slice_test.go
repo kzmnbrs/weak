@@ -7,38 +7,36 @@ import (
 )
 
 func TestSlice_IsNil(t *testing.T) {
-	t.Run("true", func(t *testing.T) {
-		s := Slice[int]{}
-		assert.True(t, s.IsNil())
-		assert.Equal(t, 0, s.Len())
-		assert.Equal(t, 0, s.Cap())
+	t.Run("true:default", func(t *testing.T) {
+		ws := Slice[int]{}
+		assert.True(t, ws.IsNil())
+		assert.Equal(t, 0, ws.Len())
+		assert.Equal(t, 0, ws.Cap())
 	})
 
-	t.Run("true", func(t *testing.T) {
-		s := NewSlice([]int(nil))
-		assert.True(t, s.IsNil())
-		assert.Equal(t, 0, s.Len())
-		assert.Equal(t, 0, s.Cap())
+	t.Run("true:new_nullptr", func(t *testing.T) {
+		ws := NewSlice([]int(nil))
+		assert.True(t, ws.IsNil())
+		assert.Equal(t, 0, ws.Len())
+		assert.Equal(t, 0, ws.Cap())
 	})
 
-	t.Run("false", func(t *testing.T) {
-		s0 := make([]int, 0, 3)
-		s0 = append(s0, 1, 2, 3)
-		s := NewSlice(s0)
-		assert.False(t, s.IsNil())
-		assert.Equal(t, 3, s.Len())
-		assert.Equal(t, 3, s.Cap())
+	t.Run("false:new_ptr", func(t *testing.T) {
+		ws := NewSlice([]int{1, 2, 3})
+		assert.False(t, ws.IsNil())
+		assert.Equal(t, 3, ws.Len())
+		assert.Equal(t, 3, ws.Cap())
 	})
 }
 
 func TestSlice_Indirect(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		ss := make([]byte, 64)
-		n, err := rand.Read(ss)
+		s := make([]byte, 64)
+		n, err := rand.Read(s)
 		assert.Equal(t, 64, n)
 		assert.Nil(t, err)
 
-		w := NewSlice[byte](ss)
-		assert.Equal(t, ss, w.Indirect())
+		w := NewSlice[byte](s)
+		assert.Equal(t, s, w.Indirect())
 	})
 }
